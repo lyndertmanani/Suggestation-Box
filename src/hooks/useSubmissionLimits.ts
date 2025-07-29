@@ -65,8 +65,8 @@ export const useSubmissionLimits = () => {
     initializeUser();
   }, [sessionId]);
 
-  const canSubmitSuggestion = suggestionCount < 2;
-  const canSubmitFeedback = feedbackCount < 1;
+  const canSubmitSuggestion = suggestionCount < 3;
+  const canSubmitFeedback = feedbackCount < 3;
 
   return {
     userId,

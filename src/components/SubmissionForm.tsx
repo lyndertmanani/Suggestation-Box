@@ -125,7 +125,9 @@ export const SubmissionForm = () => {
       <div className="max-w-2xl mx-auto space-y-6">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">Suggestion Box</h1>
-          <p className="text-muted-foreground">Share your ideas and feedback with us!</p>
+          <p className="text-muted-foreground">
+            You can submit up to 3 suggestions and 3 feedback entries per session.
+          </p>
         </div>
 
         {/* Suggestions Card */}
@@ -135,7 +137,7 @@ export const SubmissionForm = () => {
               <Lightbulb className="h-5 w-5 text-yellow-500" />
               Suggestions
               <Badge variant="secondary">
-                {suggestionCount}/2 submitted
+                {suggestionCount}/3 submitted
               </Badge>
             </CardTitle>
           </CardHeader>
@@ -187,7 +189,7 @@ export const SubmissionForm = () => {
                 <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-3" />
                 <h3 className="text-lg font-semibold mb-2">Suggestion Limit Reached</h3>
                 <p className="text-muted-foreground">
-                  You've reached your maximum of 2 suggestions. Thank you for participating!
+                  You've reached your maximum of 3 suggestions. Thank you for participating!
                 </p>
               </div>
             )}
@@ -201,7 +203,7 @@ export const SubmissionForm = () => {
               <MessageCircle className="h-5 w-5 text-blue-500" />
               Feedback
               <Badge variant="secondary">
-                {feedbackCount}/1 submitted
+                {feedbackCount}/3 submitted
               </Badge>
             </CardTitle>
           </CardHeader>
@@ -238,9 +240,9 @@ export const SubmissionForm = () => {
             ) : (
               <div className="text-center py-8 bg-muted/20 rounded-lg">
                 <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-3" />
-                <h3 className="text-lg font-semibold mb-2">Feedback Submitted</h3>
+                <h3 className="text-lg font-semibold mb-2">Feedback Limit Reached</h3>
                 <p className="text-muted-foreground">
-                  Thank you for your feedback! We appreciate your input.
+                  You've reached your maximum of 3 feedback entries. Thank you for participating!
                 </p>
               </div>
             )}

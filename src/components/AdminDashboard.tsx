@@ -4,10 +4,13 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { Suggestion, Feedback, Report } from '@/types/database';
-import { BarChart3, MessageCircle, Lightbulb, Users, RefreshCw, Brain } from 'lucide-react';
+import { BarChart3, MessageCircle, Lightbulb, Users, RefreshCw, Brain, Copy, ExternalLink, Calendar } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { SubmissionDetailModal } from './SubmissionDetailModal';
+import { AIInsightsPanel } from './AIInsightsPanel';
 
 export const AdminDashboard = () => {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -16,10 +19,13 @@ export const AdminDashboard = () => {
   const [stats, setStats] = useState({
     totalSuggestions: 0,
     totalFeedback: 0,
-    uniqueUsers: 0
+    uniqueUsers: 0,
+    todayCount: 0
   });
   const [loading, setLoading] = useState(true);
   const [generatingReport, setGeneratingReport] = useState(false);
+  const [selectedSubmission, setSelectedSubmission] = useState<(Suggestion & { type: 'suggestion' }) | (Feedback & { type: 'feedback'; title: '' }) | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { toast } = useToast();
 
   const currentUrl = window.location.origin + '/submit';
@@ -31,6 +37,8 @@ export const AdminDashboard = () => {
 
   const loadData = async () => {
     try {
+      const today = new Date().toISOString().split('T')[0];
+      
       const [suggestionsResult, feedbackResult, reportsResult, usersResult] = await Promise.all([
         supabase.from('suggestions').select('*').order('created_at', { ascending: false }),
         supabase.from('feedback').select('*').order('created_at', { ascending: false }),
@@ -42,10 +50,19 @@ export const AdminDashboard = () => {
       if (feedbackResult.data) setFeedback(feedbackResult.data);
       if (reportsResult.data) setReports(reportsResult.data);
 
+      // Calculate today's submissions
+      const todaySuggestions = suggestionsResult.data?.filter(s => 
+        s.created_at.startsWith(today)
+      ).length || 0;
+      const todayFeedback = feedbackResult.data?.filter(f => 
+        f.created_at.startsWith(today)
+      ).length || 0;
+
       setStats({
         totalSuggestions: suggestionsResult.data?.length || 0,
         totalFeedback: feedbackResult.data?.length || 0,
-        uniqueUsers: usersResult.data?.length || 0
+        uniqueUsers: usersResult.data?.length || 0,
+        todayCount: todaySuggestions + todayFeedback
       });
     } catch (error) {
       console.error('Error loading data:', error);
@@ -139,6 +156,20 @@ export const AdminDashboard = () => {
     }
   };
 
+  const copyLink = () => {
+    navigator.clipboard.writeText(currentUrl).then(() => {
+      toast({
+        title: "Link Copied",
+        description: "Submission form link copied to clipboard",
+      });
+    });
+  };
+
+  const openSubmissionDetail = (item: any) => {
+    setSelectedSubmission(item);
+    setIsModalOpen(true);
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString();
   };
@@ -207,15 +238,16 @@ export const AdminDashboard = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">AI Reports</p>
-                  <p className="text-2xl font-bold">{reports.length}</p>
+                  <p className="text-sm font-medium text-muted-foreground">Today's Activity</p>
+                  <p className="text-2xl font-bold">{stats.todayCount}</p>
                 </div>
-                <BarChart3 className="h-8 w-8 text-purple-500" />
+                <Calendar className="h-8 w-8 text-purple-500" />
               </div>
             </CardContent>
           </Card>
         </div>
 
+        {/* QR Code & Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* QR Code */}
           <Card className="lg:col-span-1">
@@ -235,6 +267,24 @@ export const AdminDashboard = () => {
                 <p className="text-sm text-muted-foreground text-center">
                   Scan to access the submission form
                 </p>
+                <div className="flex gap-2 w-full">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={copyLink}
+                    className="flex-1"
+                  >
+                    <Copy className="h-4 w-4 mr-2" />
+                    Copy Link
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => window.open(currentUrl, '_blank')}
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                  </Button>
+                </div>
                 <p className="text-xs text-muted-foreground break-all text-center">
                   {currentUrl}
                 </p>
@@ -242,55 +292,75 @@ export const AdminDashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Live Feed */}
+          {/* Tabbed Content */}
           <Card className="lg:col-span-2">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <span>Live Feed</span>
-                <Badge variant="secondary" className="bg-green-100 text-green-800">
-                  Real-time
-                </Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ScrollArea className="h-[400px] space-y-4">
-                {[
-                  ...suggestions.map(s => ({ ...s, type: 'suggestion' as const })), 
-                  ...feedback.map(f => ({ ...f, type: 'feedback' as const, title: '' }))
-                ]
-                  .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-                  .map((item, index) => (
-                    <div key={`${item.type}-${item.id}`} className="mb-4 p-4 border rounded-lg bg-card">
-                      <div className="flex items-center justify-between mb-2">
-                        <Badge variant={item.type === 'suggestion' ? 'default' : 'secondary'}>
-                          {item.type === 'suggestion' ? (
-                            <>
-                              <Lightbulb className="h-3 w-3 mr-1" />
-                              Suggestion
-                            </>
-                          ) : (
-                            <>
-                              <MessageCircle className="h-3 w-3 mr-1" />
-                              Feedback
-                            </>
-                          )}
-                        </Badge>
-                        <span className="text-xs text-muted-foreground">
-                          {formatDate(item.created_at)}
-                        </span>
-                      </div>
-                      {item.type === 'suggestion' && item.title && (
-                        <h4 className="font-semibold mb-2">{item.title}</h4>
-                      )}
-                      <p className="text-sm text-muted-foreground">{item.content}</p>
+            <CardContent className="p-0">
+              <Tabs defaultValue="submissions" className="w-full">
+                <div className="px-6 pt-6">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="submissions">Live Submissions</TabsTrigger>
+                    <TabsTrigger value="insights">AI Insights</TabsTrigger>
+                  </TabsList>
+                </div>
+                
+                <TabsContent value="submissions" className="px-6 pb-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">Live Feed</span>
+                      <Badge variant="secondary" className="bg-green-100 text-green-800">
+                        Real-time
+                      </Badge>
                     </div>
-                  ))}
-                {suggestions.length === 0 && feedback.length === 0 && (
-                  <div className="text-center py-8 text-muted-foreground">
-                    No submissions yet. Share the QR code to get started!
+                    <ScrollArea className="h-[400px] space-y-4">
+                      {[
+                        ...suggestions.map(s => ({ ...s, type: 'suggestion' as const })), 
+                        ...feedback.map(f => ({ ...f, type: 'feedback' as const, title: '' }))
+                      ]
+                        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                        .map((item, index) => (
+                          <div 
+                            key={`${item.type}-${item.id}`} 
+                            className="mb-4 p-4 border rounded-lg bg-card hover:bg-muted/20 cursor-pointer transition-colors"
+                            onClick={() => openSubmissionDetail(item)}
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              <Badge variant={item.type === 'suggestion' ? 'default' : 'secondary'}>
+                                {item.type === 'suggestion' ? (
+                                  <>
+                                    <Lightbulb className="h-3 w-3 mr-1" />
+                                    Suggestion
+                                  </>
+                                ) : (
+                                  <>
+                                    <MessageCircle className="h-3 w-3 mr-1" />
+                                    Feedback
+                                  </>
+                                )}
+                              </Badge>
+                              <span className="text-xs text-muted-foreground">
+                                {formatDate(item.created_at)}
+                              </span>
+                            </div>
+                            {item.type === 'suggestion' && item.title && (
+                              <h4 className="font-semibold mb-2 truncate">{item.title}</h4>
+                            )}
+                            <p className="text-sm text-muted-foreground line-clamp-2">{item.content}</p>
+                            <p className="text-xs text-blue-600 mt-2">Click to view details</p>
+                          </div>
+                        ))}
+                      {suggestions.length === 0 && feedback.length === 0 && (
+                        <div className="text-center py-8 text-muted-foreground">
+                          No submissions yet. Share the QR code to get started!
+                        </div>
+                      )}
+                    </ScrollArea>
                   </div>
-                )}
-              </ScrollArea>
+                </TabsContent>
+                
+                <TabsContent value="insights" className="px-6 pb-6">
+                  <AIInsightsPanel suggestions={suggestions} feedback={feedback} />
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
         </div>
@@ -345,6 +415,20 @@ export const AdminDashboard = () => {
             )}
           </CardContent>
         </Card>
+
+        {/* Submission Detail Modal */}
+        <SubmissionDetailModal
+          submission={selectedSubmission}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onMarkReviewed={(id, type) => {
+            toast({
+              title: "Marked as Reviewed",
+              description: `${type} has been marked as reviewed.`,
+            });
+            setIsModalOpen(false);
+          }}
+        />
       </div>
     </div>
   );
