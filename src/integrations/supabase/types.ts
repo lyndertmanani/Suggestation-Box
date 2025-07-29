@@ -14,192 +14,112 @@ export type Database = {
   }
   public: {
     Tables: {
-      history: {
+      feedback: {
         Row: {
-          amount: number
-          date: string
-          event_id: string
-          event_title: string
-          id: number
-          original_quantity: number | null
-          scanned_at: string | null
-          scanned_by: string
-          status: string
-          ticket_quantity: number
-          ticket_type: string
-          tx_ref: string
-          user_email: string
-          user_name: string | null
-        }
-        Insert: {
-          amount: number
-          date: string
-          event_id: string
-          event_title: string
-          id?: number
-          original_quantity?: number | null
-          scanned_at?: string | null
-          scanned_by: string
-          status?: string
-          ticket_quantity: number
-          ticket_type: string
-          tx_ref: string
-          user_email: string
-          user_name?: string | null
-        }
-        Update: {
-          amount?: number
-          date?: string
-          event_id?: string
-          event_title?: string
-          id?: number
-          original_quantity?: number | null
-          scanned_at?: string | null
-          scanned_by?: string
-          status?: string
-          ticket_quantity?: number
-          ticket_type?: string
-          tx_ref?: string
-          user_email?: string
-          user_name?: string | null
-        }
-        Relationships: []
-      }
-      payments: {
-        Row: {
-          amount: number
-          channel: string | null
-          country: string | null
+          content: string
           created_at: string | null
-          currency: string
-          customer_email: string
-          customer_first_name: string
-          customer_last_name: string
-          id: number
-          mobile: string | null
-          payment_description: string | null
-          payment_title: string | null
-          provider: string | null
-          ref_id: string | null
-          status: string
-          transaction_charges: number | null
-          tx_ref: string
-          updated_at: string | null
-        }
-        Insert: {
-          amount: number
-          channel?: string | null
-          country?: string | null
-          created_at?: string | null
-          currency: string
-          customer_email: string
-          customer_first_name: string
-          customer_last_name: string
-          id?: number
-          mobile?: string | null
-          payment_description?: string | null
-          payment_title?: string | null
-          provider?: string | null
-          ref_id?: string | null
-          status: string
-          transaction_charges?: number | null
-          tx_ref: string
-          updated_at?: string | null
-        }
-        Update: {
-          amount?: number
-          channel?: string | null
-          country?: string | null
-          created_at?: string | null
-          currency?: string
-          customer_email?: string
-          customer_first_name?: string
-          customer_last_name?: string
-          id?: number
-          mobile?: string | null
-          payment_description?: string | null
-          payment_title?: string | null
-          provider?: string | null
-          ref_id?: string | null
-          status?: string
-          transaction_charges?: number | null
-          tx_ref?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      scanners: {
-        Row: {
-          created_at: string
-          email: string
           id: string
-          password: string
-          status: string
-          ticket_id: string
+          user_id: string | null
         }
         Insert: {
-          created_at?: string
-          email: string
+          content: string
+          created_at?: string | null
           id?: string
-          password: string
-          status?: string
-          ticket_id: string
+          user_id?: string | null
         }
         Update: {
-          created_at?: string
-          email?: string
+          content?: string
+          created_at?: string | null
           id?: string
-          password?: string
-          status?: string
-          ticket_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reports: {
+        Row: {
+          generated_at: string | null
+          id: string
+          raw_data: Json | null
+          sentiment: string | null
+          summary: string | null
+          topics: string[] | null
+        }
+        Insert: {
+          generated_at?: string | null
+          id?: string
+          raw_data?: Json | null
+          sentiment?: string | null
+          summary?: string | null
+          topics?: string[] | null
+        }
+        Update: {
+          generated_at?: string | null
+          id?: string
+          raw_data?: Json | null
+          sentiment?: string | null
+          summary?: string | null
+          topics?: string[] | null
         }
         Relationships: []
       }
-      tickets: {
+      suggestions: {
         Row: {
-          amount: number
+          content: string
           created_at: string | null
-          date: string
-          event_id: string
-          event_title: string
-          id: number
-          original_quantity: number | null
-          status: string
-          ticket_quantity: number
-          ticket_type: string
-          tx_ref: string
-          user_email: string
-          user_name: string
+          id: string
+          title: string
+          user_id: string | null
         }
         Insert: {
-          amount: number
+          content: string
           created_at?: string | null
-          date: string
-          event_id: string
-          event_title: string
-          id?: number
-          original_quantity?: number | null
-          status: string
-          ticket_quantity: number
-          ticket_type: string
-          tx_ref: string
-          user_email: string
-          user_name: string
+          id?: string
+          title: string
+          user_id?: string | null
         }
         Update: {
-          amount?: number
+          content?: string
           created_at?: string | null
-          date?: string
-          event_id?: string
-          event_title?: string
-          id?: number
-          original_quantity?: number | null
-          status?: string
-          ticket_quantity?: number
-          ticket_type?: string
-          tx_ref?: string
-          user_email?: string
-          user_name?: string
+          id?: string
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "suggestions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      users: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          id: string
+          session_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          session_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          session_id?: string | null
         }
         Relationships: []
       }
@@ -208,26 +128,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      begin: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      check_all_expired_tickets: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      commit: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      rollback: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      [_ in never]: never
     }
     Enums: {
-      payment_status: "pending" | "completed" | "failed" | "refunded"
-      ticket_status: "pending" | "active" | "expired" | "cancelled"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -354,9 +258,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      payment_status: ["pending", "completed", "failed", "refunded"],
-      ticket_status: ["pending", "active", "expired", "cancelled"],
-    },
+    Enums: {},
   },
 } as const
