@@ -71,28 +71,28 @@ export const SubmissionDetailModal: React.FC<SubmissionDetailModalProps> = ({
           {/* Content */}
           <div>
             <label className="text-sm font-medium text-muted-foreground">Content</label>
-            <div className="mt-1 p-3 bg-muted/20 rounded-lg">
-              <p className="text-sm">{submission.content}</p>
+            <div className="mt-1 p- bg-muted/20 rounded-lg">
+              <p className="text-md">{submission.content}</p>
             </div>
           </div>
           
           {/* Metadata */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="flex items-center gap-2">
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+           {/* <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4 text-muted-foreground" />
               <div>
                 <p className="text-xs text-muted-foreground">Submitted</p>
                 <p className="text-sm">{formatDate(submission.created_at)}</p>
               </div>
-            </div>
+            </div> */}
             
-            <div className="flex items-center gap-2">
+            {/* <div className="flex items-center gap-2">
               <User className="h-4 w-4 text-muted-foreground" />
               <div>
                 <p className="text-xs text-muted-foreground">User ID</p>
                 <p className="text-sm font-mono">{submission.user_id?.slice(0, 8)}...</p>
               </div>
-            </div>
+            </div> */}
             
             <div className="flex items-center gap-2">
               <div>

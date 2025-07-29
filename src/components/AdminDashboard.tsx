@@ -190,7 +190,7 @@ export const AdminDashboard = () => {
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
+            <h1 className="text-3xl font-bold text-foreground"> National Youth Council Of Malawi </h1>
             <p className="text-muted-foreground">Real-time suggestion and feedback monitoring</p>
           </div>
           <Button onClick={loadData} variant="outline" size="sm">
@@ -208,7 +208,7 @@ export const AdminDashboard = () => {
                   <p className="text-sm font-medium text-muted-foreground">Total Suggestions</p>
                   <p className="text-2xl font-bold">{stats.totalSuggestions}</p>
                 </div>
-                <Lightbulb className="h-8 w-8 text-yellow-500" />
+                <Lightbulb className="h-8 w-8  text-black/70 " />
               </div>
             </CardContent>
           </Card>
@@ -219,7 +219,7 @@ export const AdminDashboard = () => {
                   <p className="text-sm font-medium text-muted-foreground">Total Feedback</p>
                   <p className="text-2xl font-bold">{stats.totalFeedback}</p>
                 </div>
-                <MessageCircle className="h-8 w-8 text-blue-500" />
+                <MessageCircle className="h-8 w-8 text-black/70" />
               </div>
             </CardContent>
           </Card>
@@ -230,7 +230,7 @@ export const AdminDashboard = () => {
                   <p className="text-sm font-medium text-muted-foreground">Unique Users</p>
                   <p className="text-2xl font-bold">{stats.uniqueUsers}</p>
                 </div>
-                <Users className="h-8 w-8 text-green-500" />
+                <Users className="h-8 w-8 text-black/70" />
               </div>
             </CardContent>
           </Card>
@@ -241,7 +241,7 @@ export const AdminDashboard = () => {
                   <p className="text-sm font-medium text-muted-foreground">Today's Activity</p>
                   <p className="text-2xl font-bold">{stats.todayCount}</p>
                 </div>
-                <Calendar className="h-8 w-8 text-purple-500" />
+                <Calendar className="h-8 w-8 text-black/70" />
               </div>
             </CardContent>
           </Card>
@@ -370,7 +370,7 @@ export const AdminDashboard = () => {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2">
-                <Brain className="h-5 w-5 text-purple-500" />
+                <Brain className="h-5 w-5 text-black/70" />
                 AI Analysis Reports
               </CardTitle>
               <Button 
