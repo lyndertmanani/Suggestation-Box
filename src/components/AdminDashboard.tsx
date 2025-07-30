@@ -256,10 +256,10 @@ export const AdminDashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="flex flex-col items-center space-y-4">
-                <div className="bg-white p-4 rounded-lg">
+                <div className="bg-white p-1 rounded-lg">
                   <QRCodeSVG
                     value={currentUrl}
-                    size={200}
+                    size={300}
                     level="M"
                     includeMargin
                   />
