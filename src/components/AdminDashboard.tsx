@@ -297,9 +297,9 @@ export const AdminDashboard = () => {
             <CardContent className="p-0">
               <Tabs defaultValue="submissions" className="w-full">
                 <div className="px-6 pt-6">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="submissions">Live Submissions</TabsTrigger>
-                    <TabsTrigger value="insights">AI Insights</TabsTrigger>
+                  <TabsList className="grid w-full grid-cols-2 bg-slate-500/20 during-700 rounded-full">
+                    <TabsTrigger className=" rounded-full" value="submissions">Live Submissions</TabsTrigger>
+                    <TabsTrigger className=" rounded-full" value="insights">AI Insights</TabsTrigger>
                   </TabsList>
                 </div>
                 
