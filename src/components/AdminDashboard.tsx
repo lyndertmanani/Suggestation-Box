@@ -178,7 +178,7 @@ export const AdminDashboard = () => {
                 <p className="text-sm font-medium text-muted-foreground">Total Suggestions</p>
                 <p className="text-3xl font-bold">{suggestions.length}</p>
               </div>
-              <TrendingUp className="h-8 w-8 text-blue-500" />
+              <TrendingUp className="h-8 w-8 text-black/60" />
             </div>
           </CardContent>
         </Card>
@@ -190,7 +190,7 @@ export const AdminDashboard = () => {
                 <p className="text-sm font-medium text-muted-foreground">Total Feedback</p>
                 <p className="text-3xl font-bold">{feedback.length}</p>
               </div>
-              <MessageSquare className="h-8 w-8 text-green-500" />
+              <MessageSquare className="h-8 w-8 text-black/60" />
             </div>
           </CardContent>
         </Card>
@@ -202,7 +202,7 @@ export const AdminDashboard = () => {
                 <p className="text-sm font-medium text-muted-foreground">Total Users</p>
                 <p className="text-3xl font-bold">{totalUsers}</p>
               </div>
-              <Users className="h-8 w-8 text-purple-500" />
+              <Users className="h-8 w-8 text-black/60" />
             </div>
           </CardContent>
         </Card>
@@ -214,7 +214,7 @@ export const AdminDashboard = () => {
                 <p className="text-sm font-medium text-muted-foreground">Today's Activity</p>
                 <p className="text-3xl font-bold">{todayCount}</p>
               </div>
-              <Clock className="h-8 w-8 text-orange-500" />
+              <Clock className="h-8 w-8 text-black/60" />
             </div>
           </CardContent>
         </Card>
