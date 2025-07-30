@@ -15,7 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 
 export const AdminDashboard = () => {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-  const [feedback, setFeedback] = useState<Feedback[]>([]);
+  const [feedback, setFeedback] = useState<Feedback[]>([]); // Disable feedback
   const [selectedSubmission, setSelectedSubmission] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [totalUsers, setTotalUsers] = useState(0);
@@ -28,7 +28,7 @@ export const AdminDashboard = () => {
   useEffect(() => {
     fetchData();
     fetchQuizSettings();
-    
+
     // Subscribe to real-time updates
     const suggestionChannel = supabase
       .channel('suggestions-changes')
@@ -71,7 +71,7 @@ export const AdminDashboard = () => {
 
     return () => {
       supabase.removeChannel(suggestionChannel);
-      supabase.removeChannel(feedbackChannel);
+      // supabase.removeChannel(feedbackChannel);
       supabase.removeChannel(quizChannel);
     };
   }, []);
@@ -124,25 +124,25 @@ export const AdminDashboard = () => {
   const fetchData = async () => {
     try {
       const today = new Date().toISOString().split('T')[0];
-      
-      // Fetch suggestions, feedback, and users
-      const [suggestionsResult, feedbackResult, usersResult] = await Promise.all([
+
+      // Fetch suggestions and users only (disable feedback)
+      const [suggestionsResult, /*feedbackResult,*/ usersResult] = await Promise.all([
         supabase.from('suggestions').select('*').order('created_at', { ascending: false }),
         supabase.from('feedback').select('*').order('created_at', { ascending: false }),
         supabase.from('users').select('id')
       ]);
 
       if (suggestionsResult.data) setSuggestions(suggestionsResult.data);
-      if (feedbackResult.data) setFeedback(feedbackResult.data);
-      
+      // if (feedbackResult.data) setFeedback(feedbackResult.data);
+
       setTotalUsers(usersResult.data?.length || 0);
 
-      // Calculate today's submissions
+      // Calculate today's submissions (suggestions only)
       const todaySubmissions = [
         ...(suggestionsResult.data || []),
-        ...(feedbackResult.data || [])
+        // ...(feedbackResult.data || [])
       ].filter(item => item.created_at.startsWith(today));
-      
+
       setTodayCount(todaySubmissions.length);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -154,10 +154,10 @@ export const AdminDashboard = () => {
     setIsModalOpen(true);
   };
 
-  // Combine and sort all submissions by date
+  // Combine and sort all submissions by date (suggestions only)
   const allSubmissions = [
     ...suggestions.map(s => ({ ...s, type: 'suggestion' as const })),
-    ...feedback.map(f => ({ ...f, type: 'feedback' as const }))
+    // ...feedback.map(f => ({ ...f, type: 'feedback' as const }))
   ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
   return (
@@ -295,7 +295,9 @@ export const AdminDashboard = () => {
                                 )}
                                 {('category' in submission) && submission.category && (
                                   <Badge variant="outline" className="text-xs">
-                                    {submission.category}
+                                    {typeof submission.category === 'string' || typeof submission.category === 'number'
+                                      ? submission.category
+                                      : ''}
                                   </Badge>
                                 )}
                               </div>
