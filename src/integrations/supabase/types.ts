@@ -16,18 +16,21 @@ export type Database = {
     Tables: {
       feedback: {
         Row: {
+          category: string | null
           content: string
           created_at: string | null
           id: string
           user_id: string | null
         }
         Insert: {
+          category?: string | null
           content: string
           created_at?: string | null
           id?: string
           user_id?: string | null
         }
         Update: {
+          category?: string | null
           content?: string
           created_at?: string | null
           id?: string
@@ -42,6 +45,59 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      quiz_responses: {
+        Row: {
+          answers: Json
+          completed_at: string | null
+          id: string
+          score: number | null
+          user_id: string | null
+        }
+        Insert: {
+          answers: Json
+          completed_at?: string | null
+          id?: string
+          score?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          answers?: Json
+          completed_at?: string | null
+          id?: string
+          score?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_responses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quiz_settings: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       reports: {
         Row: {
