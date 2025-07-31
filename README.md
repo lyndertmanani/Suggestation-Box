@@ -63,11 +63,31 @@ npm install
 
 ### 2. Supabase Configuration
 
-This project uses Supabase for backend services. The connection is pre-configured with:
-- **Project URL**: `https://mriequrpcemmdxcqiyki.supabase.co`
-- **Anon Key**: Already configured in `src/integrations/supabase/client.ts`
+This project uses Supabase for backend services.
 
-> **Important**: Since we are using a **free-tier Supabase instance**, the database may be **paused during inactivity**. It may take a few seconds to resume when accessed.
+### Supabase Setup
+
+1. **Sign up at [supabase.com](https://supabase.com/)** and create a new project.
+2. In your Supabase dashboard, go to **Project Settings > API** to find your **Project URL** and **Anon Key**.
+
+#### Local Development
+
+- Create a `.env` file in your project root:
+    ```env
+    VITE_SUPABASE_URL=your-project-url
+    VITE_SUPABASE_ANON_KEY=your-anon-key
+    ```
+- The app reads these values to connect to Supabase securely.
+
+#### Quick Start (Not recommended for production)
+
+- You may also paste your keys directly in `src/integrations/supabase/client.ts` for testing:
+    ```ts
+    const supabase = createClient('your-project-url', 'your-anon-key');
+    ```
+    > **Warning:** Never commit real keys to public repos in production.
+
+> **Important:** The free-tier Supabase database may be **paused during inactivity**. It can take a few seconds to resume when accessed.
 
 ---
 
