@@ -1,4 +1,4 @@
- # Enhanced Suggestion & Feedback System
+ # Suggestion & Feedback Box
 
 A comprehensive web application for collecting user suggestions and feedback with AI-powered analytics, admin dashboard, and interactive quiz functionality.
 > ⚠️ **Note**: This project uses the **free plan of Supabase**. The database might be **paused due to inactivity**. If the app appears unresponsive for preview, you can [contact me](mailto:hello@ericlyndert.com).
