@@ -1,73 +1,194 @@
-# Welcome to your Lovable project
+ # Enhanced Suggestion & Feedback System
 
-## Project info
+A comprehensive web application for collecting user suggestions and feedback with AI-powered analytics, admin dashboard, and interactive quiz functionality.
+> ⚠️ **Note**: This project uses the **free plan of Supabase**. The database might be **paused due to inactivity**. If the app appears unresponsive for preview, you can [contact me](mailto:hello@ericlyndert.com).
 
-**URL**: https://lovable.dev/projects/f8920afa-89b4-4a96-9e1b-69de681953a1
+---
 
-## How can I edit this code?
+## 🚀 Features
 
-There are several ways of editing your application.
+### User Features
+- **Submission System**: Submit up to 3 suggestions and 3 feedback entries per user
+- **Categorized Feedback**: Organized feedback categories (NYCOM Members, Food, Location, Sessions/trainings)
+- **Interactive Quiz**: 15-question Value Proposition Quiz (admin-controlled visibility)
+- **Mobile-First Design**: Responsive UI optimized for QR code access
+- **Real-time Validation**: Live submission limit tracking and form validation
 
-**Use Lovable**
+### Admin Features
+- **Live Dashboard**: Real-time submissions feed with click-to-preview modals
+- **QR Code Generator**: Direct link to submission page with copy/regenerate options
+- **Statistics Overview**: Total suggestions, feedback, users, and daily activity
+- **AI Analytics Panel**: 
+  - Sentiment analysis with visual charts
+  - Theme extraction by feedback categories
+  - Keyword frequency analysis
+  - Actionable insights and recommendations
+  - PDF report export functionality
+- **Quiz Management**: Toggle quiz visibility for users
+- **Submission Management**: Mark submissions as reviewed
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f8920afa-89b4-4a96-9e1b-69de681953a1) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🏗️ System Architecture
 
-**Use your preferred IDE**
+### Frontend Stack
+- **React 18** with TypeScript
+- **Vite** for build tooling
+- **Tailwind CSS** for styling
+- **shadcn/ui** for UI components
+- **React Router** for navigation
+- **Recharts** for data visualization
+- **jsPDF** for report generation
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Backend Stack
+- **Supabase** for backend services
+- **PostgreSQL** database with Row Level Security (RLS)
+- **Real-time subscriptions** for live updates
+- **Edge Functions** for AI processing
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## 🔧 Setup Instructions
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Prerequisites
+- Node.js 18+ with npm
+- Supabase account
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+### 1. Clone and Install
+```bash
+git clone git@github.com:lyndertmanani/Suggestation-Box.git
+cd Suggestation-Box
+npm install
 ```
 
-**Edit a file directly in GitHub**
+### 2. Supabase Configuration
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+This project uses Supabase for backend services. The connection is pre-configured with:
+- **Project URL**: `https://mriequrpcemmdxcqiyki.supabase.co`
+- **Anon Key**: Already configured in `src/integrations/supabase/client.ts`
 
-**Use GitHub Codespaces**
+> **Important**: Since we are using a **free-tier Supabase instance**, the database may be **paused during inactivity**. It may take a few seconds to resume when accessed.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
+## 📦 Database Schema
 
-This project is built with:
+```sql
+-- Users
+users (
+  id UUID PRIMARY KEY,
+  session_id TEXT,
+  email TEXT,
+  created_at TIMESTAMP
+)
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+-- Suggestions
+suggestions (
+  id UUID PRIMARY KEY,
+  user_id UUID,
+  title TEXT NOT NULL,
+  content TEXT NOT NULL,
+  created_at TIMESTAMP
+)
 
-## How can I deploy this project?
+-- Feedback
+feedback (
+  id UUID PRIMARY KEY,
+  user_id UUID,
+  content TEXT NOT NULL,
+  category TEXT,
+  created_at TIMESTAMP
+)
 
-Simply open [Lovable](https://lovable.dev/projects/f8920afa-89b4-4a96-9e1b-69de681953a1) and click on Share -> Publish.
+-- AI Reports
+reports (
+  id UUID PRIMARY KEY,
+  summary TEXT,
+  sentiment TEXT,
+  topics TEXT[],
+  raw_data JSONB,
+  generated_at TIMESTAMP
+)
 
-## Can I connect a custom domain to my Lovable project?
+-- Quiz Settings
+quiz_settings (
+  id UUID PRIMARY KEY,
+  is_active BOOLEAN DEFAULT false,
+  created_at TIMESTAMP,
+  updated_at TIMESTAMP
+)
 
-Yes, you can!
+-- Quiz Responses
+quiz_responses (
+  id UUID PRIMARY KEY,
+  user_id UUID,
+  answers JSONB NOT NULL,
+  score INTEGER,
+  completed_at TIMESTAMP
+)
+```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Row Level Security (RLS) Policies
+- Public read access on relevant tables
+- Per-user creation permission
+- Admin-level control for special operations
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+---
+
+## 📱 Usage Guide
+
+### Users
+- Submit up to 3 suggestions and 3 categorized feedback items
+- Take a value proposition quiz when enabled
+- Provide optional email for follow-up
+
+### Admins
+- View and manage submissions in real-time
+- Access AI analytics and export reports
+- Toggle quiz visibility
+- Use QR codes for access links
+
+---
+
+## 🧠 AI Features
+
+- **Sentiment Analysis**: Auto-label feedback (Positive/Neutral/Negative)
+- **Theme Extraction**: Detect top issues per category
+- **Keyword Frequency**: Common words cloud
+- **PDF Export**: Download reports for sharing
+
+---
+
+## 🧩 API Endpoints
+
+- `GET/POST /suggestions`
+- `GET/POST /feedback`
+- `GET/PUT /quiz_settings`
+- `POST /quiz_responses`
+
+---
+
+## 🛠 Development
+
+### Codebase Overview
+```
+src/
+├── components/
+│   ├── AdminDashboard.tsx
+│   ├── SubmissionForm.tsx
+│   ├── AIInsightsPanel.tsx
+│   ├── QuizSection.tsx
+│   └── SubmissionDetailModal.tsx
+├── hooks/
+│   ├── useSubmissionLimits.ts
+│   └── useSessionId.ts
+└── integrations/supabase/
+    ├── client.ts
+    └── types.ts
+```
+
+---
+
+## 📝 License
+
+Open-source project maintained by [@lyndertmanani](https://github.com/lyndertmanani)
