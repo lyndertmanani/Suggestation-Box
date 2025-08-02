@@ -239,7 +239,7 @@ export const SubmissionForm = () => {
                       </span>
                     </div>
                     
-                    {canSubmitSuggestion ? (
+                    {n ? (
                       <form onSubmit={handleSuggestionSubmit} className="space-y-4">
                         <div>
                           <Label htmlFor="suggestion-title">Title</Label>
